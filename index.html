@@ -1,0 +1,3247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Warehouse Tycoon</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#07090c;
+    --panel:#0d1117;
+    --panel2:#111720;
+    --border:#202833;
+    --text:#f2f4f7;
+    --muted:#8994a3;
+    --green:#31d158;
+    --red:#ff453a;
+    --yellow:#ffd60a;
+    --blue:#0a84ff;
+    --orange:#ff9f0a;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+    min-height:100vh;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+#authScreen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at 50% 20%,#17202d 0,#07090c 55%);
+}
+
+.authBox{
+    width:430px;
+    max-width:92%;
+    background:#0d1117;
+    border:1px solid #252d38;
+    border-radius:18px;
+    padding:38px;
+    box-shadow:0 25px 80px rgba(0,0,0,.65);
+}
+
+.logo{
+    font-size:32px;
+    font-weight:900;
+    margin-bottom:8px;
+}
+
+.logo span{
+    color:var(--green);
+}
+
+.tagline{
+    color:var(--muted);
+    margin-bottom:30px;
+}
+
+.authTabs{
+    display:flex;
+    background:#080b0f;
+    border-radius:9px;
+    padding:4px;
+    margin-bottom:20px;
+}
+
+.authTabs button{
+    flex:1;
+    border:0;
+    padding:11px;
+    color:#8994a3;
+    background:transparent;
+    border-radius:7px;
+}
+
+.authTabs button.active{
+    background:#1a222c;
+    color:white;
+}
+
+.input{
+    width:100%;
+    background:#080b0f;
+    color:white;
+    border:1px solid #28313d;
+    border-radius:9px;
+    padding:13px;
+    margin-bottom:12px;
+    outline:none;
+}
+
+.input:focus{
+    border-color:#3b82f6;
+}
+
+.mainButton{
+    width:100%;
+    padding:13px;
+    background:var(--green);
+    color:#061008;
+    border:0;
+    border-radius:9px;
+    font-weight:bold;
+}
+
+.authError{
+    color:#ff6258;
+    font-size:13px;
+    min-height:18px;
+    margin:8px 0;
+}
+
+
+/* =========================
+   APP
+========================= */
+
+#app{
+    display:none;
+    min-height:100vh;
+}
+
+.topbar{
+    height:72px;
+    border-bottom:1px solid var(--border);
+    background:#090c10;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.brand{
+    font-size:21px;
+    font-weight:900;
+}
+
+.brand span{
+    color:var(--green);
+}
+
+.company{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
+}
+
+.money{
+    font-size:20px;
+    font-weight:bold;
+    color:#72e38a;
+}
+
+.timeBox{
+    text-align:center;
+}
+
+.gameTime{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.day{
+    color:var(--muted);
+    font-size:11px;
+}
+
+#logoutBtn{
+    border:1px solid #303944;
+    background:#111720;
+    color:#ddd;
+    padding:8px 12px;
+    border-radius:8px;
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+.layout{
+    display:flex;
+    min-height:calc(100vh - 72px);
+}
+
+.sidebar{
+    width:230px;
+    background:#090c10;
+    border-right:1px solid var(--border);
+    padding:15px 10px;
+    flex-shrink:0;
+}
+
+.navBtn{
+    width:100%;
+    text-align:left;
+    border:0;
+    background:transparent;
+    color:#929dac;
+    padding:12px 13px;
+    margin-bottom:3px;
+    border-radius:8px;
+}
+
+.navBtn:hover{
+    background:#111720;
+    color:white;
+}
+
+.navBtn.active{
+    background:#172019;
+    color:#62dd7d;
+}
+
+.content{
+    flex:1;
+    padding:25px;
+    max-width:1500px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.pageTitle{
+    font-size:27px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.pageSubtitle{
+    color:var(--muted);
+    margin-bottom:24px;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+}
+
+.cardLabel{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:8px;
+}
+
+.cardValue{
+    font-size:25px;
+    font-weight:bold;
+}
+
+.green{
+    color:var(--green);
+}
+
+.red{
+    color:var(--red);
+}
+
+.yellow{
+    color:var(--yellow);
+}
+
+.blue{
+    color:#55aaff;
+}
+
+.grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.grid3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.tableWrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:13px;
+    text-align:left;
+    border-bottom:1px solid #1c232c;
+    font-size:13px;
+}
+
+th{
+    color:#778392;
+    font-size:11px;
+    text-transform:uppercase;
+}
+
+td{
+    color:#dfe4ea;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 8px;
+    border-radius:5px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.status.green{
+    background:#12331b;
+    color:#64e77e;
+}
+
+.status.red{
+    background:#361412;
+    color:#ff766e;
+}
+
+.status.yellow{
+    background:#342e0b;
+    color:#ffe05c;
+}
+
+.status.blue{
+    background:#102d4d;
+    color:#62b5ff;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn{
+    border:0;
+    border-radius:7px;
+    padding:9px 13px;
+    font-weight:bold;
+    font-size:12px;
+}
+
+.btnGreen{
+    background:#31d158;
+    color:#061008;
+}
+
+.btnRed{
+    background:#ff453a;
+    color:white;
+}
+
+.btnBlue{
+    background:#0a84ff;
+    color:white;
+}
+
+.btnDark{
+    background:#171e27;
+    color:#e4e8ed;
+    border:1px solid #2a333e;
+}
+
+.btnOrange{
+    background:#ff9f0a;
+    color:#171000;
+}
+
+
+/* =========================
+   SHIPMENT
+========================= */
+
+.shipment{
+    border:1px solid var(--border);
+    background:#0c1015;
+    border-radius:11px;
+    padding:17px;
+    margin-bottom:12px;
+}
+
+.shipmentTop{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:14px;
+}
+
+.shipmentTitle{
+    font-weight:bold;
+}
+
+.shipmentMeta{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:5px;
+}
+
+.document{
+    background:#151b22;
+    border:1px dashed #36404c;
+    padding:13px;
+    border-radius:8px;
+    margin-bottom:12px;
+}
+
+.document b{
+    color:#fff;
+}
+
+.shipmentActions{
+    display:flex;
+    gap:8px;
+}
+
+
+/* =========================
+   WAREHOUSE VISUAL
+========================= */
+
+.warehouseVisual{
+    height:410px;
+    background:
+        linear-gradient(#111820 1px,transparent 1px),
+        linear-gradient(90deg,#111820 1px,transparent 1px);
+    background-size:35px 35px;
+    background-color:#080b0f;
+    border:1px solid #26303b;
+    border-radius:14px;
+    position:relative;
+    overflow:hidden;
+}
+
+.zone{
+    position:absolute;
+    border:1px solid #2b3541;
+    background:#111720;
+    border-radius:6px;
+    padding:8px;
+    color:#7e8997;
+    font-size:10px;
+}
+
+.zone.a{
+    left:3%;
+    top:8%;
+    width:27%;
+    height:35%;
+}
+
+.zone.b{
+    left:35%;
+    top:8%;
+    width:27%;
+    height:35%;
+}
+
+.zone.c{
+    left:67%;
+    top:8%;
+    width:30%;
+    height:35%;
+}
+
+.zone.d{
+    left:3%;
+    top:52%;
+    width:45%;
+    height:40%;
+}
+
+.zone.e{
+    left:52%;
+    top:52%;
+    width:45%;
+    height:40%;
+}
+
+.forklift{
+    position:absolute;
+    background:#ffd60a;
+    width:35px;
+    height:22px;
+    border-radius:3px;
+    animation:moveForklift 8s linear infinite;
+}
+
+.forklift:after{
+    content:"";
+    position:absolute;
+    width:18px;
+    height:4px;
+    background:#ddd;
+    right:-16px;
+    top:4px;
+}
+
+@keyframes moveForklift{
+    0%{left:5%;top:75%}
+    25%{left:35%;top:75%}
+    50%{left:35%;top:25%}
+    75%{left:80%;top:25%}
+    100%{left:5%;top:75%}
+}
+
+
+/* =========================
+   PRODUCT
+========================= */
+
+.productIcon{
+    width:36px;
+    height:36px;
+    border-radius:7px;
+    background:#202a35;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin-right:9px;
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+}
+
+.modalBox{
+    width:450px;
+    max-width:92%;
+    background:#0e1319;
+    border:1px solid #2a333e;
+    border-radius:14px;
+    padding:23px;
+}
+
+.modalTitle{
+    font-size:21px;
+    font-weight:bold;
+    margin-bottom:18px;
+}
+
+.modalActions{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+    margin-top:18px;
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:200;
+    background:#151b22;
+    border:1px solid #35404d;
+    padding:14px 18px;
+    border-radius:9px;
+    display:none;
+    box-shadow:0 10px 30px #000;
+}
+
+@media(max-width:1000px){
+
+    .sidebar{
+        width:185px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .grid2{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        width:65px;
+    }
+
+    .navBtn{
+        font-size:0;
+        text-align:center;
+    }
+
+    .navBtn:first-letter{
+        font-size:18px;
+    }
+
+    .content{
+        padding:15px;
+    }
+
+    .topbar{
+        padding:0 10px;
+    }
+
+    .company{
+        display:none;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+
+<div id="authScreen">
+
+<div class="authBox">
+
+    <div class="logo">
+        WAREHOUSE <span>TYCOON</span>
+    </div>
+
+    <div class="tagline">
+        Gelin ve kendi deponuzu yönetin.
+    </div>
+
+    <div class="authTabs">
+
+        <button id="loginTab" class="active">
+            Giriş Yap
+        </button>
+
+        <button id="registerTab">
+            Kayıt Ol
+        </button>
+
+    </div>
+
+    <input
+        id="username"
+        class="input"
+        placeholder="Kullanıcı adı"
+    >
+
+    <input
+        id="password"
+        type="password"
+        class="input"
+        placeholder="Şifre"
+    >
+
+    <div id="authError" class="authError"></div>
+
+    <button
+        id="authButton"
+        class="mainButton"
+    >
+        GİRİŞ YAP
+    </button>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     APP
+===================================================== -->
+
+<div id="app">
+
+<div class="topbar">
+
+    <div>
+        <div class="brand">
+            WAREHOUSE <span>TYCOON</span>
+        </div>
+        <div class="company" id="companyName">
+            Şirketiniz
+        </div>
+    </div>
+
+    <div class="timeBox">
+        <div class="gameTime" id="gameClock">
+            08:00
+        </div>
+        <div class="day" id="dayText">
+            1. Gün
+        </div>
+    </div>
+
+    <div>
+        <div class="money" id="money">
+            $10,000,000
+        </div>
+    </div>
+
+    <button id="logoutBtn">
+        Çıkış
+    </button>
+
+</div>
+
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<button class="navBtn active" data-page="dashboard">
+    🏠 Ana Sayfa
+</button>
+
+<button class="navBtn" data-page="incoming">
+    🚛 Gelen Sevkiyatlar
+</button>
+
+<button class="navBtn" data-page="inventory">
+    📦 Depo Stokları
+</button>
+
+<button class="navBtn" data-page="stores">
+    🏪 Mağazalar
+</button>
+
+<button class="navBtn" data-page="orders">
+    🛒 Mağaza Siparişleri
+</button>
+
+<button class="navBtn" data-page="vehicles">
+    🚚 Sevkiyat Araçları
+</button>
+
+<button class="navBtn" data-page="suppliers">
+    🌎 Tedarikçiler
+</button>
+
+<button class="navBtn" data-page="employees">
+    👷 Çalışanlar
+</button>
+
+<button class="navBtn" data-page="warehouse">
+    🏗️ Depo
+</button>
+
+</aside>
+
+
+<!-- CONTENT -->
+
+<main class="content">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section id="dashboard" class="page active">
+
+<div class="pageTitle">
+    Yönetim Merkezi
+</div>
+
+<div class="pageSubtitle">
+    Deponuzun genel durumunu buradan takip edin.
+</div>
+
+
+<div class="stats">
+
+<div class="card">
+<div class="cardLabel">ŞİRKET BÜTÇESİ</div>
+<div class="cardValue green" id="statMoney">
+$10,000,000
+</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">DEPO STOĞU</div>
+<div class="cardValue" id="statStock">
+0
+</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">MAĞAZALAR</div>
+<div class="cardValue blue">
+5
+</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">ÇALIŞANLAR</div>
+<div class="cardValue yellow">
+12
+</div>
+</div>
+
+</div>
+
+
+<div class="grid2">
+
+<div class="card">
+
+<h3 style="margin-bottom:15px">
+Bugünün Finans Durumu
+</h3>
+
+<table>
+
+<tr>
+<td>Mağaza gelirleri</td>
+<td class="green" id="todayRevenue">
++$0
+</td>
+</tr>
+
+<tr>
+<td>Ürün alımları</td>
+<td class="red" id="todayPurchases">
+-$0
+</td>
+</tr>
+
+<tr>
+<td>Sevkiyat giderleri</td>
+<td class="red">
+-$0
+</td>
+</tr>
+
+<tr>
+<td><b>Net</b></td>
+<td id="todayNet">
+$0
+</td>
+</tr>
+
+</table>
+
+</div>
+
+
+<div class="card">
+
+<h3 style="margin-bottom:15px">
+İş Günü
+</h3>
+
+<div style="font-size:34px;font-weight:bold">
+08:00 — 17:30
+</div>
+
+<p style="color:#8994a3;margin-top:8px">
+Yemek molası: 12:00 — 13:30
+</p>
+
+<div style="
+margin-top:18px;
+height:8px;
+background:#202731;
+border-radius:5px;
+overflow:hidden;
+">
+
+<div id="dayProgress"
+style="
+height:100%;
+width:0%;
+background:#31d158;
+">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card" style="margin-top:18px">
+
+<h3 style="margin-bottom:15px">
+Depo Durumu
+</h3>
+
+<div class="warehouseVisual">
+
+<div class="zone a">
+A BLOK<br>
+Gıda
+</div>
+
+<div class="zone b">
+B BLOK<br>
+İçecek
+</div>
+
+<div class="zone c">
+C BLOK<br>
+Temizlik
+</div>
+
+<div class="zone d">
+D BLOK<br>
+Toplama Alanı
+</div>
+
+<div class="zone e">
+E BLOK<br>
+Sevkiyat
+</div>
+
+<div class="forklift"></div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     INCOMING
+===================================================== -->
+
+<section id="incoming" class="page">
+
+<div class="pageTitle">
+Gelen Sevkiyatlar
+</div>
+
+<div class="pageSubtitle">
+Gelen tırların evraklarını kontrol edin. Miktar doğruysa kabul edin.
+</div>
+
+<div id="shipments"></div>
+
+</section>
+
+
+<!-- =====================================================
+     INVENTORY
+===================================================== -->
+
+<section id="inventory" class="page">
+
+<div class="pageTitle">
+Depo Stokları
+</div>
+
+<div class="pageSubtitle">
+Deponuzdaki ürünleri ve hangi mağazaya ayrıldıklarını takip edin.
+</div>
+
+<div class="card">
+
+<div class="tableWrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Ürün</th>
+<th>Kategori</th>
+<th>Stok</th>
+<th>Raf</th>
+<th>Durum</th>
+</tr>
+</thead>
+
+<tbody id="inventoryTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     STORES
+===================================================== -->
+
+<section id="stores" class="page">
+
+<div class="pageTitle">
+Mağazalar
+</div>
+
+<div class="pageSubtitle">
+Bağlı mağazalarınızın günlük cirosunu ve siparişlerini yönetin.
+</div>
+
+<div class="grid3" id="storesGrid"></div>
+
+</section>
+
+
+<!-- =====================================================
+     ORDERS
+===================================================== -->
+
+<section id="orders" class="page">
+
+<div class="pageTitle">
+Mağaza Siparişleri
+</div>
+
+<div class="pageSubtitle">
+Mağazaların istediği ürünleri toplamacılara hazırlatın.
+</div>
+
+<div class="card">
+
+<div class="tableWrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Mağaza</th>
+<th>Ürün</th>
+<th>Miktar</th>
+<th>Toplayıcı</th>
+<th>Durum</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="ordersTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     VEHICLES
+===================================================== -->
+
+<section id="vehicles" class="page">
+
+<div class="pageTitle">
+Sevkiyat Araçları
+</div>
+
+<div class="pageSubtitle">
+Hazırlanan siparişleri kendi araçlarınızla mağazalara gönderin.
+</div>
+
+<div class="card">
+
+<div class="tableWrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Araç</th>
+<th>Plaka</th>
+<th>Kapasite</th>
+<th>Durum</th>
+<th>Hedef</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="vehiclesTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     SUPPLIERS
+===================================================== -->
+
+<section id="suppliers" class="page">
+
+<div class="pageTitle">
+Tedarikçiler
+</div>
+
+<div class="pageSubtitle">
+Dünyanın farklı bölgelerinden ürün sipariş edin.
+</div>
+
+<div class="grid3" id="suppliersGrid"></div>
+
+</section>
+
+
+<!-- =====================================================
+     EMPLOYEES
+===================================================== -->
+
+<section id="employees" class="page">
+
+<div class="pageTitle">
+Çalışanlar
+</div>
+
+<div class="pageSubtitle">
+Depodaki çalışanlarınızı yönetin.
+</div>
+
+<div class="grid3">
+
+<div class="card">
+<div class="cardLabel">TOPLAM ÇALIŞAN</div>
+<div class="cardValue">12</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">FORKLİFT OPERATÖRÜ</div>
+<div class="cardValue">4</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">TOPLAYICI</div>
+<div class="cardValue">6</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">SEVKİYAT PERSONELİ</div>
+<div class="cardValue">2</div>
+</div>
+
+</div>
+
+<div class="card" style="margin-top:18px">
+
+<h3 style="margin-bottom:15px">
+Personel Listesi
+</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>Çalışan</th>
+<th>Görev</th>
+<th>Vardiya</th>
+<th>Durum</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>Ahmet Y.</td>
+<td>Forklift Operatörü</td>
+<td>08:00-17:30</td>
+<td><span class="status green">ÇALIŞIYOR</span></td>
+</tr>
+
+<tr>
+<td>Mehmet K.</td>
+<td>Toplayıcı</td>
+<td>08:00-17:30</td>
+<td><span class="status green">ÇALIŞIYOR</span></td>
+</tr>
+
+<tr>
+<td>Burak T.</td>
+<td>Toplayıcı</td>
+<td>08:00-17:30</td>
+<td><span class="status green">ÇALIŞIYOR</span></td>
+</tr>
+
+<tr>
+<td>Emre A.</td>
+<td>Sevkiyat</td>
+<td>08:00-17:30</td>
+<td><span class="status blue">SAHADA</span></td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     WAREHOUSE
+===================================================== -->
+
+<section id="warehouse" class="page">
+
+<div class="pageTitle">
+Depo Yönetimi
+</div>
+
+<div class="pageSubtitle">
+Depo kapasitesini ve operasyon alanlarını yönetin.
+</div>
+
+<div class="stats">
+
+<div class="card">
+<div class="cardLabel">TOPLAM KAPASİTE</div>
+<div class="cardValue">50,000</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">KULLANILAN</div>
+<div class="cardValue" id="warehouseUsed">
+0
+</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">DOLULUK</div>
+<div class="cardValue yellow" id="warehousePercent">
+0%
+</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">FORKLİFT</div>
+<div class="cardValue">4</div>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3 style="margin-bottom:15px">
+Depo Genişletme
+</h3>
+
+<p style="
+color:#8994a3;
+margin-bottom:15px;
+">
+Depoyu büyüterek daha fazla ürün stoklayabilir ve daha fazla mağazaya hizmet verebilirsiniz.
+</p>
+
+<button
+class="btn btnGreen"
+onclick="expandWarehouse()"
+>
++10.000 Kapasite — $500.000
+</button>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div id="modal" class="modal">
+
+<div class="modalBox">
+
+<div class="modalTitle" id="modalTitle">
+İşlem
+</div>
+
+<div id="modalContent"></div>
+
+<div class="modalActions">
+
+<button
+class="btn btnDark"
+onclick="closeModal()"
+>
+İptal
+</button>
+
+<button
+id="modalConfirm"
+class="btn btnGreen"
+>
+Onayla
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="toast"></div>
+
+
+<script>
+
+/* =========================================================
+   VERİLER
+========================================================= */
+
+let currentUser=null;
+
+let registeredUsers=
+    JSON.parse(
+        localStorage.getItem("warehouseUsers")||"{}"
+    );
+
+
+const products=[
+    {
+        id:1,
+        name:"Makarna",
+        category:"Gıda",
+        supplier:"Anadolu Food",
+        price:4.5
+    },
+    {
+        id:2,
+        name:"Su 1.5L",
+        category:"İçecek",
+        supplier:"Aqua Global",
+        price:2
+    },
+    {
+        id:3,
+        name:"Kola 330ml",
+        category:"İçecek",
+        supplier:"Global Drinks",
+        price:3
+    },
+    {
+        id:4,
+        name:"Deterjan",
+        category:"Temizlik",
+        supplier:"EuroClean",
+        price:8
+    },
+    {
+        id:5,
+        name:"Şampuan",
+        category:"Kişisel Bakım",
+        supplier:"Anatolia Care",
+        price:7
+    },
+    {
+        id:6,
+        name:"Pirinç 1kg",
+        category:"Gıda",
+        supplier:"Asia Foods",
+        price:6
+    }
+];
+
+
+let stores=[
+    {
+        id:1,
+        name:"Warehouse Market Kadıköy",
+        city:"İstanbul",
+        revenue:0
+    },
+    {
+        id:2,
+        name:"Warehouse Market Ataşehir",
+        city:"İstanbul",
+        revenue:0
+    },
+    {
+        id:3,
+        name:"Warehouse Market Kartal",
+        city:"İstanbul",
+        revenue:0
+    },
+    {
+        id:4,
+        name:"Warehouse Market Ümraniye",
+        city:"İstanbul",
+        revenue:0
+    },
+    {
+        id:5,
+        name:"Warehouse Market Pendik",
+        city:"İstanbul",
+        revenue:0
+    }
+];
+
+
+let suppliers=[
+    {
+        name:"Anadolu Food",
+        country:"Türkiye",
+        products:"Gıda",
+        factor:1
+    },
+    {
+        name:"Euro Distribution",
+        country:"Almanya",
+        products:"Temizlik",
+        factor:1.35
+    },
+    {
+        name:"Asia Foods",
+        country:"Çin",
+        products:"Gıda",
+        factor:.8
+    },
+    {
+        name:"Global Drinks",
+        country:"Hollanda",
+        products:"İçecek",
+        factor:1.15
+    },
+    {
+        name:"Aqua Global",
+        country:"İtalya",
+        products:"İçecek",
+        factor:1.1
+    },
+    {
+        name:"Anatolia Care",
+        country:"Türkiye",
+        products:"Kişisel Bakım",
+        factor:1
+    }
+];
+
+
+let vehicles=[
+    {
+        id:1,
+        name:"Mercedes Actros",
+        plate:"34 WT 001",
+        capacity:1200,
+        status:"Hazır",
+        target:"—"
+    },
+    {
+        id:2,
+        name:"Volvo FH",
+        plate:"34 WT 002",
+        capacity:1500,
+        status:"Hazır",
+        target:"—"
+    },
+    {
+        id:3,
+        name:"Scania R",
+        plate:"34 WT 003",
+        capacity:1800,
+        status:"Hazır",
+        target:"—"
+    }
+];
+
+
+let inventory=[];
+
+let orders=[];
+
+let shipments=[];
+
+let day=1;
+
+let money=10000000;
+
+let warehouseCapacity=50000;
+
+let lastRevenue=0;
+
+let lastPurchases=0;
+
+
+/* =========================================================
+   KAYIT
+========================================================= */
+
+let registerMode=false;
+
+
+document.getElementById(
+    "loginTab"
+).onclick=()=>{
+
+    registerMode=false;
+
+    document.getElementById(
+        "loginTab"
+    ).classList.add("active");
+
+    document.getElementById(
+        "registerTab"
+    ).classList.remove("active");
+
+    document.getElementById(
+        "authButton"
+    ).textContent="GİRİŞ YAP";
+
+};
+
+
+document.getElementById(
+    "registerTab"
+).onclick=()=>{
+
+    registerMode=true;
+
+    document.getElementById(
+        "registerTab"
+    ).classList.add("active");
+
+    document.getElementById(
+        "loginTab"
+    ).classList.remove("active");
+
+    document.getElementById(
+        "authButton"
+    ).textContent="ŞİRKETİ KUR";
+
+};
+
+
+document.getElementById(
+    "authButton"
+).onclick=()=>{
+
+    const username=
+        document.getElementById(
+            "username"
+        ).value.trim();
+
+    const password=
+        document.getElementById(
+            "password"
+        ).value;
+
+    const error=
+        document.getElementById(
+            "authError"
+        );
+
+
+    if(username.length<3){
+
+        error.textContent=
+            "Kullanıcı adı en az 3 karakter olmalı.";
+
+        return;
+    }
+
+
+    if(password.length<4){
+
+        error.textContent=
+            "Şifre en az 4 karakter olmalı.";
+
+        return;
+    }
+
+
+    if(registerMode){
+
+        if(registeredUsers[username]){
+
+            error.textContent=
+                "Bu kullanıcı zaten kayıtlı.";
+
+            return;
+        }
+
+
+        registeredUsers[username]={
+            password:password,
+            company:
+                username+
+                " Logistics",
+            money:10000000,
+            day:1,
+            capacity:50000,
+            inventory:[],
+            orders:[],
+            shipments:[],
+            stores:stores.map(
+                s=>({
+                    ...s,
+                    revenue:0
+                })
+            )
+        };
+
+
+        saveUsers();
+
+
+        error.style.color=
+            "#31d158";
+
+        error.textContent=
+            "Şirketiniz kuruldu! Giriş yapabilirsiniz.";
+
+
+        registerMode=false;
+
+        document.getElementById(
+            "loginTab"
+        ).click();
+
+        document.getElementById(
+            "password"
+        ).value="";
+
+    }else{
+
+        const user=
+            registeredUsers[username];
+
+
+        if(
+            !user ||
+            user.password!==password
+        ){
+
+            error.style.color=
+                "#ff453a";
+
+            error.textContent=
+                "Kullanıcı adı veya şifre yanlış.";
+
+            return;
+        }
+
+
+        login(username);
+    }
+};
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function login(username){
+
+    currentUser=username;
+
+    const data=
+        registeredUsers[username];
+
+
+    money=data.money;
+    day=data.day||1;
+    warehouseCapacity=
+        data.capacity||50000;
+
+    inventory=
+        data.inventory||[];
+
+    orders=
+        data.orders||[];
+
+    shipments=
+        data.shipments||[];
+
+    stores=
+        data.stores||stores;
+
+
+    document.getElementById(
+        "authScreen"
+    ).style.display="none";
+
+    document.getElementById(
+        "app"
+    ).style.display="block";
+
+
+    document.getElementById(
+        "companyName"
+    ).textContent=
+        data.company;
+
+
+    updateAll();
+
+    startClock();
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document.getElementById(
+    "logoutBtn"
+).onclick=()=>{
+
+    saveGame();
+
+    location.reload();
+};
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+function saveUsers(){
+
+    localStorage.setItem(
+        "warehouseUsers",
+        JSON.stringify(
+            registeredUsers
+        )
+    );
+}
+
+
+function saveGame(){
+
+    if(!currentUser)
+        return;
+
+
+    registeredUsers[currentUser].money=
+        money;
+
+    registeredUsers[currentUser].day=
+        day;
+
+    registeredUsers[currentUser].capacity=
+        warehouseCapacity;
+
+    registeredUsers[currentUser].inventory=
+        inventory;
+
+    registeredUsers[currentUser].orders=
+        orders;
+
+    registeredUsers[currentUser].shipments=
+        shipments;
+
+    registeredUsers[currentUser].stores=
+        stores;
+
+
+    saveUsers();
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document.querySelectorAll(
+    ".navBtn"
+).forEach(btn=>{
+
+    btn.onclick=()=>{
+
+        document.querySelectorAll(
+            ".navBtn"
+        ).forEach(
+            b=>b.classList.remove("active")
+        );
+
+        document.querySelectorAll(
+            ".page"
+        ).forEach(
+            p=>p.classList.remove("active")
+        );
+
+
+        btn.classList.add("active");
+
+        document.getElementById(
+            btn.dataset.page
+        ).classList.add("active");
+
+
+        updateAll();
+    };
+});
+
+
+/* =========================================================
+   CLOCK
+========================================================= */
+
+let minutes=8*60;
+
+
+function startClock(){
+
+    setInterval(
+        ()=>{
+
+            minutes+=5;
+
+            if(minutes>=17*60+30){
+
+                nextDay();
+
+                return;
+            }
+
+
+            if(
+                minutes>=12*60 &&
+                minutes<13*60+30
+            ){
+
+                document.getElementById(
+                    "status"
+                ).textContent="YEMEK MOLASI";
+
+            }else{
+
+                document.getElementById(
+                    "status"
+                ).textContent="ÇALIŞIYOR";
+
+            }
+
+
+            renderClock();
+
+        },
+        1500
+    );
+}
+
+
+function renderClock(){
+
+    const h=
+        Math.floor(minutes/60);
+
+    const m=
+        minutes%60;
+
+
+    document.getElementById(
+        "gameClock"
+    ).textContent=
+        String(h).padStart(2,"0")+
+        ":"+
+        String(m).padStart(2,"0");
+
+
+    document.getElementById(
+        "dayText"
+    ).textContent=
+        day+". Gün";
+
+
+    const progress=
+        ((minutes-480)/
+        (1050-480))*100;
+
+
+    document.getElementById(
+        "dayProgress"
+    ).style.width=
+        Math.max(
+            0,
+            Math.min(100,progress)
+        )+"%";
+}
+
+
+/* =========================================================
+   NEW DAY
+========================================================= */
+
+function nextDay(){
+
+    minutes=8*60;
+
+    day++;
+
+    /*
+       Mağazalar her gün ciro üretir.
+    */
+
+    let revenue=0;
+
+
+    stores.forEach(
+        store=>{
+
+            const amount=
+                50000+
+                Math.floor(
+                    Math.random()*100000
+                );
+
+            store.revenue=
+                amount;
+
+            money+=amount;
+
+            revenue+=amount;
+        }
+    );
+
+
+    lastRevenue=revenue;
+
+
+    /*
+       Yeni mağaza siparişleri
+    */
+
+    createDailyOrders();
+
+
+    /*
+       Yeni gelen tır
+    */
+
+    createShipment();
+
+
+    showToast(
+        "Yeni gün başladı. Mağazalardan $"+
+        revenue.toLocaleString()+
+        " ciro geldi."
+    );
+
+
+    saveGame();
+
+    updateAll();
+}
+
+
+/* =========================================================
+   SHIPMENT
+========================================================= */
+
+function createShipment(){
+
+    const product=
+        products[
+            Math.floor(
+                Math.random()*products.length
+            )
+        ];
+
+
+    const expected=
+        200+
+        Math.floor(
+            Math.random()*800
+        );
+
+
+    /*
+       Bazı tırlar eksik gelir.
+    */
+
+    const correct=
+        Math.random()>.30;
+
+
+    const actual=
+        correct
+        ? expected
+        : Math.max(
+            1,
+            expected-
+            Math.floor(
+                Math.random()*80
+            )
+        );
+
+
+    shipments.unshift({
+
+        id:
+            Date.now(),
+
+        supplier:
+            product.supplier,
+
+        product:
+            product.name,
+
+        expected,
+        actual,
+
+        status:"Bekliyor"
+
+    });
+}
+
+
+/* =========================================================
+   SHIPMENT RENDER
+========================================================= */
+
+function renderShipments(){
+
+    const el=
+        document.getElementById(
+            "shipments"
+        );
+
+
+    if(shipments.length===0){
+
+        el.innerHTML=
+            `<div class="card">
+                Şu anda bekleyen sevkiyat yok.
+             </div>`;
+
+        return;
+    }
+
+
+    el.innerHTML=
+        shipments.map(
+            s=>{
+
+                const correct=
+                    s.expected===s.actual;
+
+
+                return `
+                <div class="shipment">
+
+                    <div class="shipmentTop">
+
+                        <div>
+                            <div class="shipmentTitle">
+                                🚛 ${s.supplier}
+                            </div>
+
+                            <div class="shipmentMeta">
+                                Ürün: ${s.product}
+                            </div>
+                        </div>
+
+                        <span class="status ${
+                            s.status==="Bekliyor"
+                            ?"yellow"
+                            :s.status==="Kabul Edildi"
+                            ?"green"
+                            :"red"
+                        }">
+                            ${s.status}
+                        </span>
+
+                    </div>
+
+
+                    <div class="document">
+
+                        <b>SEVKİYAT EVRAKI</b>
+
+                        <br><br>
+
+                        Ürün:
+                        <b>${s.product}</b>
+
+                        <br>
+
+                        Evrak miktarı:
+                        <b>${s.expected}</b> adet
+
+                        <br>
+
+                        Sayılan miktar:
+                        <b>${s.actual}</b> adet
+
+                        <br><br>
+
+                        ${
+                            correct
+                            ?
+                            `<span class="green">
+                                ✓ Miktar doğru
+                             </span>`
+                            :
+                            `<span class="red">
+                                ✕ Miktar uyuşmuyor
+                             </span>`
+                        }
+
+                    </div>
+
+
+                    ${
+                        s.status==="Bekliyor"
+                        ?
+                        `<div class="shipmentActions">
+
+                            <button
+                            class="btn btnGreen"
+                            onclick="acceptShipment(${s.id})"
+                            >
+                            ✓ EVRAĞI ONAYLA
+                            </button>
+
+                            <button
+                            class="btn btnRed"
+                            onclick="rejectShipment(${s.id})"
+                            >
+                            ✕ REDDET
+                            </button>
+
+                        </div>`
+                        :
+                        ""
+                    }
+
+                </div>
+                `;
+            }
+        ).join("");
+}
+
+
+/* =========================================================
+   ACCEPT
+========================================================= */
+
+function acceptShipment(id){
+
+    const s=
+        shipments.find(
+            x=>x.id===id
+        );
+
+
+    if(!s)
+        return;
+
+
+    if(s.expected!==s.actual){
+
+        showToast(
+            "Miktar yanlış! Bu sevkiyatı kabul edemezsiniz."
+        );
+
+        return;
+    }
+
+
+    const product=
+        products.find(
+            p=>p.name===s.product
+        );
+
+
+    let item=
+        inventory.find(
+            i=>i.product===s.product
+        );
+
+
+    if(!item){
+
+        item={
+            product:s.product,
+            category:product.category,
+            quantity:0,
+            shelf:
+                "A-"+(inventory.length+1)
+        };
+
+        inventory.push(item);
+    }
+
+
+    item.quantity+=s.actual;
+
+    s.status="Kabul Edildi";
+
+
+    showToast(
+        s.actual+
+        " adet "+
+        s.product+
+        " depoya alındı."
+    );
+
+
+    saveGame();
+
+    updateAll();
+}
+
+
+/* =========================================================
+   REJECT
+========================================================= */
+
+function rejectShipment(id){
+
+    const s=
+        shipments.find(
+            x=>x.id===id
+        );
+
+
+    if(!s)
+        return;
+
+
+    if(s.expected===s.actual){
+
+        showToast(
+            "Miktar doğru. Bu sevkiyatı reddetmek gereksiz."
+        );
+
+        return;
+    }
+
+
+    s.status="Reddedildi";
+
+
+    showToast(
+        "Tır reddedildi. Ürünler geri gönderildi."
+    );
+
+
+    saveGame();
+
+    updateAll();
+}
+
+
+/* =========================================================
+   INVENTORY
+========================================================= */
+
+function renderInventory(){
+
+    const el=
+        document.getElementById(
+            "inventoryTable"
+        );
+
+
+    el.innerHTML=
+        inventory.map(
+            i=>`
+
+            <tr>
+
+                <td>
+                    📦 ${i.product}
+                </td>
+
+                <td>
+                    ${i.category}
+                </td>
+
+                <td>
+                    <b>${i.quantity.toLocaleString()}</b>
+                </td>
+
+                <td>
+                    ${i.shelf}
+                </td>
+
+                <td>
+                    ${
+                        i.quantity>100
+                        ?
+                        `<span class="status green">
+                            YETERLİ
+                         </span>`
+                        :
+                        `<span class="status yellow">
+                            AZALIYOR
+                         </span>`
+                    }
+                </td>
+
+            </tr>
+        `
+        ).join("");
+
+
+    if(!inventory.length){
+
+        el.innerHTML=
+            `<tr>
+                <td colspan="5">
+                    Depoda henüz ürün yok.
+                </td>
+             </tr>`;
+    }
+
+
+    const total=
+        inventory.reduce(
+            (sum,i)=>sum+i.quantity,
+            0
+        );
+
+
+    document.getElementById(
+        "statStock"
+    ).textContent=
+        total.toLocaleString();
+
+
+    document.getElementById(
+        "warehouseUsed"
+    ).textContent=
+        total.toLocaleString();
+
+
+    document.getElementById(
+        "warehousePercent"
+    ).textContent=
+        Math.round(
+            total/warehouseCapacity*100
+        )+"%";
+}
+
+
+/* =========================================================
+   STORES
+========================================================= */
+
+function renderStores(){
+
+    const el=
+        document.getElementById(
+            "storesGrid"
+        );
+
+
+    el.innerHTML=
+        stores.map(
+            s=>`
+
+            <div class="card">
+
+                <div style="
+                    font-size:30px;
+                    margin-bottom:12px;
+                ">
+                    🏪
+                </div>
+
+                <h3>
+                    ${s.name}
+                </h3>
+
+                <p style="
+                    color:#8994a3;
+                    margin-top:5px;
+                    font-size:13px;
+                ">
+                    ${s.city}
+                </p>
+
+                <div style="
+                    margin-top:18px;
+                    color:#8994a3;
+                    font-size:12px;
+                ">
+                    Bugünkü ciro
+                </div>
+
+                <div class="green" style="
+                    font-size:23px;
+                    font-weight:bold;
+                    margin-top:5px;
+                ">
+                    $${s.revenue.toLocaleString()}
+                </div>
+
+            </div>
+        `
+        ).join("");
+}
+
+
+/* =========================================================
+   ORDERS
+========================================================= */
+
+function createDailyOrders(){
+
+    for(
+        let i=0;
+        i<3;
+        i++
+    ){
+
+        const store=
+            stores[
+                Math.floor(
+                    Math.random()*stores.length
+                )
+            ];
+
+
+        const product=
+            products[
+                Math.floor(
+                    Math.random()*products.length
+                )
+            ];
+
+
+        orders.push({
+
+            id:Date.now()+i,
+
+            store:store.name,
+
+            product:product.name,
+
+            quantity:
+                50+
+                Math.floor(
+                    Math.random()*250
+                ),
+
+            status:"Bekliyor",
+
+            picker:"Mehmet K."
+
+        });
+    }
+}
+
+
+function renderOrders(){
+
+    const el=
+        document.getElementById(
+            "ordersTable"
+        );
+
+
+    el.innerHTML=
+        orders.map(
+            o=>`
+
+            <tr>
+
+                <td>${o.store}</td>
+
+                <td>📦 ${o.product}</td>
+
+                <td>
+                    ${o.quantity}
+                </td>
+
+                <td>
+                    ${o.picker}
+                </td>
+
+                <td>
+
+                    <span class="status ${
+                        o.status==="Bekliyor"
+                        ?"yellow"
+                        :o.status==="Hazırlanıyor"
+                        ?"blue"
+                        :"green"
+                    }">
+
+                    ${o.status}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    ${
+                        o.status==="Bekliyor"
+
+                        ?
+
+                        `<button
+                        class="btn btnBlue"
+                        onclick="prepareOrder(${o.id})"
+                        >
+                        TOPLAMAYA BAŞLA
+                        </button>`
+
+                        :
+
+                        o.status==="Hazır"
+
+                        ?
+
+                        `<button
+                        class="btn btnGreen"
+                        onclick="dispatchOrder(${o.id})"
+                        >
+                        SEVK ET
+                        </button>`
+
+                        :
+                        ""
+                    }
+
+                </td>
+
+            </tr>
+        `
+        ).join("");
+}
+
+
+/* =========================================================
+   PREPARE
+========================================================= */
+
+function prepareOrder(id){
+
+    const o=
+        orders.find(
+            x=>x.id===id
+        );
+
+
+    const item=
+        inventory.find(
+            x=>x.product===o.product
+        );
+
+
+    if(
+        !item ||
+        item.quantity<o.quantity
+    ){
+
+        showToast(
+            "Yeterli stok yok. Önce ürün sipariş edin."
+        );
+
+        return;
+    }
+
+
+    item.quantity-=o.quantity;
+
+    o.status="Hazır";
+
+
+    showToast(
+        o.quantity+
+        " adet "+
+        o.product+
+        " toplandı. Sevkiyata hazır."
+    );
+
+
+    saveGame();
+
+    updateAll();
+}
+
+
+/* =========================================================
+   VEHICLES
+========================================================= */
+
+function renderVehicles(){
+
+    const el=
+        document.getElementById(
+            "vehiclesTable"
+        );
+
+
+    el.innerHTML=
+        vehicles.map(
+            v=>`
+
+            <tr>
+
+                <td>
+                    🚚 ${v.name}
+                </td>
+
+                <td>
+                    ${v.plate}
+                </td>
+
+                <td>
+                    ${v.capacity.toLocaleString()}
+                </td>
+
+                <td>
+
+                    <span class="status ${
+                        v.status==="Hazır"
+                        ?"green"
+                        :"blue"
+                    }">
+                        ${v.status}
+                    </span>
+
+                </td>
+
+                <td>
+                    ${v.target}
+                </td>
+
+                <td>
+
+                    ${
+                        v.status==="Hazır"
+                        ?
+                        `<button
+                        class="btn btnBlue"
+                        onclick="chooseVehicle(${v.id})"
+                        >
+                        MAĞAZAYA GÖNDER
+                        </button>`
+                        :
+                        ""
+                    }
+
+                </td>
+
+            </tr>
+        `
+        ).join("");
+}
+
+
+/* =========================================================
+   DISPATCH
+========================================================= */
+
+function dispatchOrder(id){
+
+    const order=
+        orders.find(
+            x=>x.id===id
+        );
+
+
+    if(!order)
+        return;
+
+
+    const vehicle=
+        vehicles.find(
+            v=>v.status==="Hazır"
+        );
+
+
+    if(!vehicle){
+
+        showToast(
+            "Boş sevkiyat aracı yok."
+        );
+
+        return;
+    }
+
+
+    chooseVehicle(
+        vehicle.id,
+        order
+    );
+}
+
+
+function chooseVehicle(
+    vehicleId,
+    order=null
+){
+
+    const vehicle=
+        vehicles.find(
+            v=>v.id===vehicleId
+        );
+
+
+    let html=`
+
+        <select id="vehicleStore" class="input">
+
+            ${stores.map(
+                s=>
+                `<option>
+                    ${s.name}
+                </option>`
+            ).join("")}
+
+        </select>
+
+    `;
+
+
+    openModal(
+        "Sevkiyat Aracı Ata",
+        html,
+        ()=>{
+            const target=
+                document.getElementById(
+                    "vehicleStore"
+                ).value;
+
+
+            vehicle.status="Yolda";
+
+            vehicle.target=target;
+
+
+            if(order){
+
+                order.status="Sevk Edildi";
+            }
+
+
+            showToast(
+                vehicle.name+
+                " → "+
+                target+
+                " gönderildi."
+            );
+
+
+            saveGame();
+
+            updateAll();
+
+            setTimeout(
+                ()=>{
+                    vehicle.status="Hazır";
+                    vehicle.target="—";
+
+                    if(order){
+                        order.status="Teslim Edildi";
+                    }
+
+                    saveGame();
+                    updateAll();
+                },
+                7000
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   SUPPLIERS
+========================================================= */
+
+function renderSuppliers(){
+
+    const el=
+        document.getElementById(
+            "suppliersGrid"
+        );
+
+
+    el.innerHTML=
+        suppliers.map(
+            s=>`
+
+            <div class="card">
+
+                <div style="
+                    font-size:28px;
+                    margin-bottom:10px;
+                ">
+                    🌎
+                </div>
+
+                <h3>
+                    ${s.name}
+                </h3>
+
+                <p style="
+                    color:#8994a3;
+                    font-size:12px;
+                    margin-top:5px;
+                ">
+                    ${s.country}
+                </p>
+
+                <p style="
+                    color:#8994a3;
+                    font-size:12px;
+                    margin-top:4px;
+                ">
+                    ${s.products}
+                </p>
+
+                <button
+                class="btn btnGreen"
+                style="margin-top:18px"
+                onclick="buyFromSupplier('${s.name}')"
+                >
+                    ÜRÜN SİPARİŞ ET
+                </button>
+
+            </div>
+        `
+        ).join("");
+}
+
+
+/* =========================================================
+   SUPPLIER ORDER
+========================================================= */
+
+function buyFromSupplier(name){
+
+    const supplier=
+        suppliers.find(
+            s=>s.name===name
+        );
+
+
+    const available=
+        products.filter(
+            p=>
+            p.supplier===name ||
+            p.category===supplier.products
+        );
+
+
+    const options=
+        available.map(
+            p=>
+            `<option value="${p.id}">
+                ${p.name} — $${p.price}/adet
+            </option>`
+        ).join("");
+
+
+    const html=`
+
+        <select
+        id="buyProduct"
+        class="input"
+        >
+            ${options}
+        </select>
+
+        <input
+        id="buyQuantity"
+        class="input"
+        type="number"
+        min="1"
+        value="100"
+        placeholder="Miktar"
+        >
+
+        <p style="
+            color:#8994a3;
+            font-size:12px;
+        ">
+            Sipariş fiyatı ürün ve tedarikçiye göre değişir.
+        </p>
+    `;
+
+
+    openModal(
+        supplier.name+
+        " — Ürün Siparişi",
+        html,
+        ()=>{
+
+            const pid=
+                Number(
+                    document.getElementById(
+                        "buyProduct"
+                    ).value
+                );
+
+
+            const quantity=
+                Number(
+                    document.getElementById(
+                        "buyQuantity"
+                    ).value
+                );
+
+
+            const product=
+                products.find(
+                    p=>p.id===pid
+                );
+
+
+            const price=
+                product.price*
+                supplier.factor*
+                quantity;
+
+
+            if(
+                !quantity ||
+                quantity<=0
+            ){
+
+                showToast(
+                    "Geçerli miktar girin."
+                );
+
+                return;
+            }
+
+
+            if(money<price){
+
+                showToast(
+                    "Bu siparişi karşılayacak bütçeniz yok."
+                );
+
+                return;
+            }
+
+
+            money-=price;
+
+            lastPurchases+=price;
+
+
+            shipments.unshift({
+
+                id:Date.now(),
+
+                supplier:supplier.name,
+
+                product:product.name,
+
+                expected:quantity,
+
+                actual:quantity,
+
+                status:"Bekliyor"
+
+            });
+
+
+            showToast(
+                "$"+
+                price.toLocaleString()+
+                " tutarında sipariş verildi. Tır depoya geldiğinde evrakı kontrol edin."
+            );
+
+
+            saveGame();
+
+            updateAll();
+        }
+    );
+}
+
+
+/* =========================================================
+   WAREHOUSE EXPAND
+========================================================= */
+
+function expandWarehouse(){
+
+    const cost=500000;
+
+
+    if(money<cost){
+
+        showToast(
+            "Depoyu genişletmek için yeterli bütçeniz yok."
+        );
+
+        return;
+    }
+
+
+    money-=cost;
+
+    warehouseCapacity+=10000;
+
+
+    showToast(
+        "Depo kapasitesi 10.000 arttırıldı."
+    );
+
+
+    saveGame();
+
+    updateAll();
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(
+    title,
+    content,
+    confirm
+){
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent=title;
+
+
+    document.getElementById(
+        "modalContent"
+    ).innerHTML=content;
+
+
+    document.getElementById(
+        "modal"
+    ).style.display="flex";
+
+
+    document.getElementById(
+        "modalConfirm"
+    ).onclick=()=>{
+
+        closeModal();
+
+        confirm();
+    };
+}
+
+
+function closeModal(){
+
+    document.getElementById(
+        "modal"
+    ).style.display="none";
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+
+function showToast(message){
+
+    const toast=
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent=message;
+
+    toast.style.display="block";
+
+
+    clearTimeout(toastTimer);
+
+
+    toastTimer=
+        setTimeout(
+            ()=>{
+                toast.style.display="none";
+            },
+            3500
+        );
+}
+
+
+/* =========================================================
+   UPDATE ALL
+========================================================= */
+
+function updateAll(){
+
+    document.getElementById(
+        "money"
+    ).textContent=
+        "$"+
+        money.toLocaleString();
+
+
+    document.getElementById(
+        "statMoney"
+    ).textContent=
+        "$"+
+        money.toLocaleString();
+
+
+    document.getElementById(
+        "todayRevenue"
+    ).textContent=
+        "+$"+
+        lastRevenue.toLocaleString();
+
+
+    document.getElementById(
+        "todayPurchases"
+    ).textContent=
+        "-$"+
+        lastPurchases.toLocaleString();
+
+
+    document.getElementById(
+        "todayNet"
+    ).textContent=
+        "$"+
+        (
+            lastRevenue-
+            lastPurchases
+        ).toLocaleString();
+
+
+    renderShipments();
+
+    renderInventory();
+
+    renderStores();
+
+    renderOrders();
+
+    renderVehicles();
+
+    renderSuppliers();
+
+    renderClock();
+}
+
+
+/* =========================================================
+   AUTO SAVE
+========================================================= */
+
+setInterval(
+    ()=>{
+        saveGame();
+    },
+    5000
+);
+
+</script>
+
+</body>
+</html>
